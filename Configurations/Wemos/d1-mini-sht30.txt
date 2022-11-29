@@ -1,0 +1,49 @@
+# An ESP8266 and SHT30-based themperature sensor
+# The sensor uses an I2C bus (see the 'i2c' section)
+
+esphome:
+  name: d1-mini-th1
+
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "UHTB9w5ZAWxO7H9NmqXwdmWJYaOEWfAxxxTyZXoUu+w="
+
+ota:
+  password: "50456088743f9290f2d462d1488ada67"
+
+wifi:
+  ssid: ""
+  password: ""
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "D1-Mini-Th1 Fallback Hotspot"
+    password: "vQ50TQL7WNmp"
+
+captive_portal:
+
+i2c:
+  sda: GPIO4
+  scl: GPIO5
+  scan: True
+  id: bus_a
+
+sensor:
+  - platform: sht3xd
+    address: 0x45
+    i2c_id: bus_a
+    temperature:
+      name: "Living Room Temperature"
+      id: "temperature"
+    humidity:
+      name: "Living Room Humidity"
+      id: "humidity"
+    update_interval: 10s
+
