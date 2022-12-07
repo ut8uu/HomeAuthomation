@@ -1,0 +1,108 @@
+esphome:
+  name: "bigdisplay-e4a120"
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "e4a1205ZAWxO7H9NmqXwdmWJYaOEWfAxxxTyZXoUu+w="
+
+ota:
+  password: "e4a12088743f9290f2d462d1488ada67"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esphome-Web-E4A120"
+    password: "Oacu6Qx50NRu"
+
+captive_portal:
+
+spi:
+  clk_pin: GPIO18
+  mosi_pin: GPIO23
+  miso_pin: GPIO19
+
+output:
+  # backlight
+  - platform: ledc
+    pin: 15
+    id: gpio_15_backlight_pwm
+    inverted: true
+
+light:
+  # backlight for HA
+  - platform: monochromatic
+    output: gpio_15_backlight_pwm
+    name: "ILI9341 Display Backlight"
+    id: back_light
+    restore_mode: ALWAYS_ON
+
+font:
+  - file: "gfonts://Roboto"
+    id: font1
+    size: 20
+
+color:
+  - id: my_red
+    red: 100%
+    green: 3%
+    blue: 5%
+
+display:
+  - platform: ili9341
+    model: TFT 2.4
+    id: touch_display
+    cs_pin: GPIO5
+    dc_pin: GPIO4
+    # if backlight is not controlled by pwm uncomment this 
+    #led_pin:
+    #  number: 15
+    #  inverted: true
+    reset_pin: GPIO22
+
+    # play a little, 
+    # draw colors, text, images
+    # to show the state of an entity, change the color or write some text 
+    # in this example the image ist swapped depend from my device 
+    # extended_color_light_3 
+    # it is imported later as binary sensor
+    lambda: |-
+      it.fill(Color::BLACK);
+      it.print(0, 0, id(font1), id(my_red), TextAlign::TOP_LEFT, "Hello World!");
+
+xpt2046:
+	id: touchscreen
+	cs_pin: GPIO14
+	irq_pin: GPIO27
+	update_interval: 50ms
+	report_interval: 1s
+	threshold: 400
+	dimension_x: 240
+	dimension_y: 320
+	calibration_x_min: 3860
+	calibration_x_max: 280
+	calibration_y_min: 340
+	calibration_y_max: 3860
+	swap_x_y: false
+
+binary_sensor:
+  - platform: xpt2046
+    xpt2046_id: touchscreen
+    id: touch_key0
+    x_min: 0
+    x_max: 240
+    y_min: 0
+    y_max: 320
+    on_press:
+    - logger.log: "Key0 was touched"
