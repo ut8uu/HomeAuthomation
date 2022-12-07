@@ -2,7 +2,8 @@
 # The sensor uses an I2C bus (see the 'i2c' section)
 
 esphome:
-  name: d1-mini-th1
+#  name: d1-mini-livingroom-01
+  name: esphome-web-83e824
 
 esp8266:
   board: d1_mini
@@ -13,14 +14,14 @@ logger:
 # Enable Home Assistant API
 api:
   encryption:
-    key: "UHTB9w5ZAWxO7H9NmqXwdmWJYaOEWfAxxxTyZXoUu+w="
+    key: "12TB9w5ZAWxO7H9NmqXwdmWJYaOEWfAxxxTyZXoUu+w="
 
 ota:
   password: "50456088743f9290f2d462d1488ada67"
 
 wifi:
-  ssid: ""
-  password: ""
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
@@ -47,3 +48,16 @@ sensor:
       id: "humidity"
     update_interval: 10s
 
+font:
+  - file: "gfonts://Roboto"
+    id: font1
+    size: 20
+
+display:
+  - platform: ssd1306_i2c
+    model: "SSD1306 64x48"
+    reset_pin: D0 #GPIO16
+    address: 0x3C
+    lambda: |-
+      it.printf(0, 0, id(font1), "%.1f °C", id(temperature).state);
+      it.printf(0, 20, id(font1), "%.1f %%", id(humidity).state);
