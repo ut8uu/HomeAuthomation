@@ -50,8 +50,23 @@ light:
 
 font:
   - file: "gfonts://Roboto"
-    id: font1
+    id: font20
     size: 20
+  - file: "gfonts://Roboto"
+    id: font25
+    size: 25
+  - file: "gfonts://Roboto"
+    id: font30
+    size: 30
+  - file: "gfonts://Roboto"
+    id: font40
+    size: 40
+  - file: "gfonts://Roboto"
+    id: font60
+    size: 60
+  - file: "gfonts://Roboto"
+    id: font80
+    size: 80
 
 color:
   - id: my_red
@@ -61,10 +76,11 @@ color:
 
 text_sensor:
   - platform: homeassistant
-    id: living_room_temperature
+    id: outdoor_temperature
+    entity_id: "sensor.outdoor_temperature"
+  - platform: homeassistant
+    id: indoor_temperature
     entity_id: "sensor.living_room_temperature"
-    #attribute: temperature
-    #internal: true
 
 time:
   - platform: sntp
@@ -98,6 +114,21 @@ display:
 
     lambda: |-
       it.fill(Color::BLACK);
-      it.print(0, 0, id(font1), id(my_red), TextAlign::TOP_LEFT, "Hello World!");
-      it.printf(0, 20, id(font1), "t=%s C", id(living_room_temperature).state.c_str());
-      it.strftime(0, 50, id(font1), "%d.%m.%Y %H:%M:%S", id(sntp_time).now());
+      it.strftime(120, 0, id(font25), TextAlign::TOP_CENTER, "%d.%m.%Y %H:%M:%S", id(sntp_time).now());
+      if (id(outdoor_temperature).has_state())
+      {
+        it.printf(120, 30, id(font80), TextAlign::TOP_CENTER, "%s C", id(outdoor_temperature).state.c_str());
+      }
+      else
+      {
+        it.print(120, 30, id(font80), TextAlign::TOP_CENTER, "--.- C");
+      }
+      if (id(indoor_temperature).has_state())
+      {
+        it.printf(120, 80, id(font80), TextAlign::TOP_CENTER, "%s C", id(indoor_temperature).state.c_str());
+      }
+      else
+      {
+        it.print(120, 80, id(font80), TextAlign::TOP_CENTER, "--.- C");
+      }
+      delay(500);
