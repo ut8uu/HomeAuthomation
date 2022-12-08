@@ -63,7 +63,7 @@ text_sensor:
   - platform: homeassistant
     id: living_room_temperature
     entity_id: "sensor.living_room_temperature"
-    attribute: temperature
+    #attribute: temperature
     #internal: true
 
 time:
