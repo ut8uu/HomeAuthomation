@@ -99,5 +99,5 @@ display:
     lambda: |-
       it.fill(Color::BLACK);
       it.print(0, 0, id(font1), id(my_red), TextAlign::TOP_LEFT, "Hello World!");
-      it.printf(0, 20, id(font1), "t=%s C", id(living_room_temperature).c_str());
+      it.printf(0, 20, id(font1), "t=%s C", id(living_room_temperature).state.c_str());
       it.strftime(0, 50, id(font1), "%d.%m.%Y %H:%M:%S", id(sntp_time).now());
