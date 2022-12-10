@@ -1,5 +1,5 @@
 esphome:
-  name: "esphome-web-e4a120"
+  name: "big-display"
 
 esp32:
   board: esp32dev
@@ -133,4 +133,4 @@ display:
       {
         it.print(240, indoor_temp_y, id(font80), TextAlign::TOP_RIGHT, "--.- C");
       }
-      delay(500);
+      delay(100);
