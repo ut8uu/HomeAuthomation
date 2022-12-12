@@ -36,16 +36,15 @@ spi:
 output:
   # backlight
   - platform: ledc
-    pin: 15
+    pin: GPIO15
     id: gpio_15_backlight_pwm
-    inverted: true
 
 light:
   # backlight for HA
   - platform: monochromatic
     output: gpio_15_backlight_pwm
     name: "ILI9341 Display Backlight"
-    id: back_light
+    id: back_light_big_display
     restore_mode: ALWAYS_ON
 
 font:
@@ -113,22 +112,27 @@ display:
     reset_pin: GPIO22
 
     lambda: |-
+
+      id(back_light_big_display).turn_on();
+
+      auto outdoor_temp_y = 30;
+      auto indoor_temp_y = 100;
       it.fill(Color::BLACK);
       it.strftime(120, 0, id(font25), TextAlign::TOP_CENTER, "%d.%m.%Y %H:%M:%S", id(sntp_time).now());
       if (id(outdoor_temperature).has_state())
       {
-        it.printf(120, 30, id(font80), TextAlign::TOP_CENTER, "%s C", id(outdoor_temperature).state.c_str());
+        it.printf(240, outdoor_temp_y, id(font80), TextAlign::TOP_RIGHT, "%s C", id(outdoor_temperature).state.c_str());
       }
       else
       {
-        it.print(120, 30, id(font80), TextAlign::TOP_CENTER, "--.- C");
+        it.print(240, outdoor_temp_y, id(font80), TextAlign::TOP_RIGHT, "--.- C");
       }
       if (id(indoor_temperature).has_state())
       {
-        it.printf(120, 80, id(font80), TextAlign::TOP_CENTER, "%s C", id(indoor_temperature).state.c_str());
+        it.printf(240, indoor_temp_y, id(font80), TextAlign::TOP_RIGHT, "%s C", id(indoor_temperature).state.c_str());
       }
       else
       {
-        it.print(120, 80, id(font80), TextAlign::TOP_CENTER, "--.- C");
+        it.print(240, indoor_temp_y, id(font80), TextAlign::TOP_RIGHT, "--.- C");
       }
-      delay(500);
+      delay(100);
