@@ -64,6 +64,11 @@ color:
     green: 3%
     blue: 5%
 
+sensor:
+  - platform: homeassistant
+    id: sun_elevation
+    entity_id: sensor.sun_elevation
+
 text_sensor:
   - platform: homeassistant
     id: outdoor_temperature
@@ -76,6 +81,15 @@ time:
   - platform: sntp
     id: sntp_time
 
+globals:
+ - id: first_page             # First page of the display?
+   type: bool
+   restore_value: no
+ - id: current_brightness             # Is display on?
+   type: float
+   restore_value: no
+   initial_value: '-1.0'
+
 spi:
   clk_pin: GPIO17
   mosi_pin: GPIO16
@@ -85,6 +99,7 @@ display:
   - platform: ili9341
     model: TFT 2.4
     id: touch_display
+    update_interval: 5s
     cs_pin: GPIO15
     dc_pin: GPIO4
     # if backlight is not controlled by pwm uncomment this 
@@ -95,6 +110,15 @@ display:
     rotation: 90
 
     lambda: |-
+      float br;
+      if (id(sun_elevation).state > 0) {
+        // Full brightness during the day
+        br=1.0;    
+      } else {
+        // 50 percent at night
+        br=0.5;
+      }
+
       id(back_light_big_display).turn_on();
 
       auto max_y = 320;
@@ -118,4 +142,9 @@ display:
       {
         it.print(max_y, indoor_temp_y, id(font120), TextAlign::TOP_RIGHT, "--.- C");
       }
-      //delay(100);
+
+      // Change brightnes if it needs to be changed
+      if (id(current_brightness)!=br) {  
+        //it.set_backlight_brightness(br);
+        id(current_brightness)=br;
+      }
