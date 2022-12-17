@@ -1,5 +1,13 @@
+# WIRING
+# CS		-> D15
+# RESET	-> D2
+# DC		-> D4
+# MOSI	-> D16
+# SCK		-> D17
+# LCD		-> D5
+
 esphome:
-  name: "esphome-web-e4a120"
+  name: "big-display"
 
 esp32:
   board: esp32dev
@@ -28,15 +36,10 @@ wifi:
 
 captive_portal:
 
-spi:
-  clk_pin: GPIO18
-  mosi_pin: GPIO23
-  miso_pin: GPIO19
-
 output:
   # backlight
   - platform: ledc
-    pin: GPIO15
+    pin: GPIO5
     id: gpio_15_backlight_pwm
 
 light:
@@ -85,34 +88,24 @@ time:
   - platform: sntp
     id: sntp_time
 
-touchscreen:
-  platform: xpt2046
-  id: my_touchscreen
-  cs_pin: GPIO16
-  interrupt_pin: GPIO21
-  update_interval: 50ms
-  report_interval: 1s
-  threshold: 400
-  calibration_x_min: 3860
-  calibration_x_max: 280
-  calibration_y_min: 340
-  calibration_y_max: 3860
-  swap_x_y: false
+spi:
+  clk_pin: GPIO17
+  mosi_pin: GPIO16
+  miso_pin: GPIO22 # unused
 
 display:
   - platform: ili9341
     model: TFT 2.4
     id: touch_display
-    cs_pin: GPIO5
+    cs_pin: GPIO15
     dc_pin: GPIO4
     # if backlight is not controlled by pwm uncomment this 
     #led_pin:
     #  number: 15
     #  inverted: true
-    reset_pin: GPIO22
+    reset_pin: GPIO2
 
     lambda: |-
-
       id(back_light_big_display).turn_on();
 
       auto outdoor_temp_y = 30;
@@ -135,4 +128,4 @@ display:
       {
         it.print(240, indoor_temp_y, id(font80), TextAlign::TOP_RIGHT, "--.- C");
       }
-      delay(100);
+      //delay(100);
