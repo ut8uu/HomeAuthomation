@@ -31,8 +31,8 @@ wifi:
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: "Esphome-Web-E4A120"
-    password: "Oacu6Qx50NRu"
+    ssid: "Esphome-Big-Display"
+    password: !secret wifi_password
 
 captive_portal:
 
@@ -75,7 +75,7 @@ text_sensor:
     entity_id: "sensor.outdoor_temperature"
   - platform: homeassistant
     id: indoor_temperature
-    entity_id: "sensor.living_room_temperature"
+    entity_id: "sensor.indoor_temperature"
 
 time:
   - platform: sntp
