@@ -1,0 +1,73 @@
+# WIRING
+# D1-mini               GPIO            Shield    D1 Pro
+# ========================================================
+# D2                    NC*(5/4/0/2)    TFT_LED	  21
+# D1                    RST*(5/0/2)     TFT_RST   22
+# D8                    15              TFT_DC    05
+# D7                    13              MOSI      23
+# D6                    12              MISO      19
+# D5                    14              SCK       18
+# D0                    16              TFT_CS    26
+# D3                    0*(5/4/2)       TS_CS     17
+
+
+esphome:
+  name: co2-meter
+
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "2CHxk61A+1g29x4RdZFGarVsh1NXr6Knn0XX9DpQlJI="
+
+ota:
+  password: "8fe76c4f879f7fc5a3a5939b42d806ca"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Co2-Meter Fallback Hotspot"
+    password: "mL0dCjrBkngL"
+
+captive_portal:
+
+font:
+  - file: "gfonts://Roboto"
+    id: font20
+    size: 20
+
+color:
+  - id: my_red
+    red: 100%
+    green: 3%
+    blue: 5%
+
+spi:
+ clk_pin: D5
+ mosi_pin: D7
+ miso_pin: D6
+
+time:
+  - platform: sntp
+    id: sntp_time
+
+display:
+  - platform: ili9341
+    model: TFT 2.4
+    cs_pin: D0
+    dc_pin: D8
+    led_pin: D2
+    reset_pin: D1
+    rotation: 90
+    id: tft_display
+    lambda: |-
+      it.fill(Color::BLACK);
+      it.strftime(120, 0, id(font20), TextAlign::TOP_CENTER, "%d.%m.%Y %H:%M:%S", id(sntp_time).now());
